@@ -11,62 +11,53 @@ The industry is scaling the Internet of Agents — AI agents that discover, comm
 
 Critical segments of the autonomous economy — aerospace, defense, maritime logistics, physical infrastructure — operate at the extreme edge. Connectivity is intermittent. Trust must be continuously verified. The penalty for an AI hallucination or unauthorized action can be severe.
 
-To scale AI agents in the enterprise, we need more than discovery. We need **cryptographic model governance**, **offline-capable identity**, and **structural regulatory compliance**.
+To scale AI agents in the enterprise, we need more than discovery. We need **cryptographic model governance**, **offline-capable identity**, **structural regulatory compliance**, and **verifiable capability restriction**.
 
-These five libraries are the building blocks.
+These libraries are the building blocks.
 
 ---
 
-## The Architecture of Trust
+## How the libraries fit together
 
-Five composable libraries. Use independently or stack together for a mathematically verifiable agent ecosystem.
+Each library ships a **small, versioned Protocol surface** and a **public conformance test suite**. Any third-party backend — including proprietary ones — plugs in behind the same Protocol and proves compliance against the same public tests. The open substrate is the standard; what you build above it is yours. No vendor lock-in, no forked forks.
+
+---
+
+## Two tiers of trust
+
+**Model Trust** answers *"what is this model?"* — identity, metadata, integrity, approval.
+**Behavioral Trust** answers *"what is this agent allowed to do, right now?"* — regulation, capability, staging.
+**Federation** sits beneath both — how agents find each other on the network.
 
 ```
-                    +---------------------------+
-                    |        sm-bridge          |   Transport & Federation
-                    |  Registry endpoints,      |   "How is it exposed?"
-                    |  Quilt delta sync         |
-                    +-------------+-------------+
-                                  |
-                    +-------------+-------------+
-                    |   sm-model-governance     |   Execution & Compliance
-                    |  3-plane separation,      |   "Has it been approved?"
-                    |  Ed25519 signing, drift   |
-                    +-------------+-------------+
-                                  |
-                    +-------------+-------------+
-                    |  sm-model-integrity-      |   Cryptographic Verification
-                    |          layer            |   "Is it tamper-free?"
-                    |  Hashing, attestation,    |
-                    |  lineage, policy gates    |
-                    +-------------+-------------+
-                                  |
-                    +-------------+-------------+
-                    |     sm-model-card         |   Metadata & Lifecycle
-                    |  20-field schema, 4 model |   "What is this model?"
-                    |  types, lifecycle FSM     |
-                    +-------------+-------------+
-                                  |
-                    +-------------+-------------+
-                    |   sm-model-provenance     |   Base Identity
-                    |  8-field dataclass,       |   "Where did it come from?"
-                    |  3 serialization targets  |
-                    +---------------------------+
+  +-----------------------------------------------------------+
+  |                      BEHAVIORAL TRUST                     |
+  |                                                           |
+  |    sm-locp     →     sm-airlock    →     sm-enclave       |
+  |  (compliance)     (capabilities)      (speculative exec)  |
+  +-----------------------------------------------------------+
+                              |
+  +-----------------------------------------------------------+
+  |                         MODEL TRUST                       |
+  |                                                           |
+  |  sm-model-       sm-model-     sm-model-       sm-model-  |
+  |  provenance  →   card      →   integrity-  →   governance |
+  |  (identity)     (metadata)      layer          (approval) |
+  |                                (verification)             |
+  +-----------------------------------------------------------+
+                              |
+  +-----------------------------------------------------------+
+  |                         FEDERATION                        |
+  |                                                           |
+  |   sm-bridge  —  registry endpoints, Quilt delta sync      |
+  +-----------------------------------------------------------+
 ```
 
 ---
 
-### 1. Transport & Federation — [`sm-bridge`](https://github.com/Sharathvc23/sm-bridge)
+## Model Trust Tier
 
-> Exposing enterprise agents to a federated network should not require rewriting an entire database or implementing complex sync protocols from scratch.
-
-A reference implementation for NANDA-compatible registry endpoints and Quilt-style delta synchronization. Drop-in FastAPI router, DID/handle parsing, thread-safe delta store, and a protocol-based converter for integrating with any internal data model.
-
-`pip install git+https://github.com/Sharathvc23/sm-bridge.git`
-
----
-
-### 2. Base Identity — [`sm-model-provenance`](https://github.com/Sharathvc23/sm-model-provenance)
+### 1. Base Identity — [`sm-model-provenance`](https://github.com/Sharathvc23/sm-model-provenance)
 
 > Agents need a standardized way to broadcast who they are and what model powers them, without heavy dependencies in constrained edge environments.
 
@@ -76,7 +67,7 @@ A zero-dependency Python dataclass capturing core model identity (model ID, prov
 
 ---
 
-### 3. Metadata & Lifecycle — [`sm-model-card`](https://github.com/Sharathvc23/sm-model-card)
+### 2. Metadata & Lifecycle — [`sm-model-card`](https://github.com/Sharathvc23/sm-model-card)
 
 > Enterprise environments require structured documentation of an AI's capabilities, training metrics, and deployment lifecycle.
 
@@ -86,7 +77,7 @@ A unified model card schema for federated registries. Covers LoRA adapters, edge
 
 ---
 
-### 4. Cryptographic Verification — [`sm-model-integrity-layer`](https://github.com/Sharathvc23/sm-model-integrity-layer)
+### 3. Cryptographic Verification — [`sm-model-integrity-layer`](https://github.com/Sharathvc23/sm-model-integrity-layer)
 
 > In a decentralized network, systems must mathematically verify an agent hasn't been compromised in transit or loaded with unauthorized model weights.
 
@@ -96,7 +87,7 @@ An additive integrity gate. Offline SHA-256 weight hashing, HMAC-SHA256 attestat
 
 ---
 
-### 5. Execution & Compliance — [`sm-model-governance`](https://github.com/Sharathvc23/sm-model-governance)
+### 4. Approval & Drift — [`sm-model-governance`](https://github.com/Sharathvc23/sm-model-governance)
 
 > AI cannot autonomously execute high-stakes actions without a legally defensible audit trail and verifiable oversight.
 
@@ -106,13 +97,39 @@ Three-plane ML governance (Training → Approval → Serving). Ed25519 cryptogra
 
 ---
 
-### 6. Capability Restriction — sm-airlock
+## Behavioral Trust Tier
+
+### 5. Regulatory Compliance — [`sm-locp`](https://github.com/Sharathvc23/sm-locp)
+
+> An approved model can still do the wrong thing. Regulatory compliance is about what the *agent* does in the world, not what the *model* is.
+
+The Open Compliance Protocol (OCP) — a defeasible-logic engine, machine-readable regulations (MRR) format, and W3C Verifiable Credential issuance layer. Agents observe their operational state, check it against regulatory theories, and produce cryptographic proofs of compliance that any third party can verify without re-running the evaluation.
+
+Persistence Protocol v1 is frozen. Ship your own corpus, your own backend — the engine is indifferent as long as your implementation passes the public conformance suite.
+
+`pip install git+https://github.com/Sharathvc23/sm-locp.git`
+
+---
+
+### 6. Capability Restriction — sm-airlock *(private)*
 
 Attribute-level sandbox that restricts what agent plugins can access through allowlist-based access control, rate limiting, and effect staging with commit/discard semantics.
 
-### 7. Decision Staging — sm-enclave
+### 7. Decision Staging — sm-enclave *(private)*
 
 Speculative execution sandbox that stages agent side effects in isolated contexts with irreversibility gating, priority-ordered atomic commit, and parallel branch execution with winner/loser finalization.
+
+---
+
+## Federation
+
+### 0. Transport & Federation — [`sm-bridge`](https://github.com/Sharathvc23/sm-bridge)
+
+> Exposing enterprise agents to a federated network should not require rewriting an entire database or implementing complex sync protocols from scratch.
+
+A reference implementation for NANDA-compatible registry endpoints and Quilt-style delta synchronization. Drop-in FastAPI router, DID/handle parsing, thread-safe delta store, and a protocol-based converter for integrating with any internal data model.
+
+`pip install git+https://github.com/Sharathvc23/sm-bridge.git`
 
 ---
 
@@ -122,6 +139,7 @@ Speculative execution sandbox that stages agent side effects in isolated context
 |-----------|-----|
 | **Zero dependencies** | All core libraries use only the Python standard library. Crypto and database backends are optional extras. |
 | **Protocol-based** | Extension points use `@runtime_checkable` protocols — no forced inheritance, no vendor lock-in. |
+| **Conformance-driven** | Every versioned Protocol ships with a public test suite. Backends prove compliance by passing the same tests as the reference implementation. |
 | **Fail-fast validation** | Invalid data is rejected at construction time, not discovered downstream. |
 | **Composable** | Each library answers one question. Stack them for full governance or use any one standalone. |
 | **Offline-first** | Every operation works without network access. Federation is additive, not required. |
@@ -149,6 +167,18 @@ coord = GovernanceCoordinator()
 output = coord.complete_training("my-model", "sha256:abc", {"loss": 0.28})
 approval = coord.submit_for_governance(output, approved_by="governance-lead")
 
+# Regulatory compliance
+from sm_locp import (
+    RegulatoryTheoryBuilder, Literal, VCGenerator, ComplianceCredentialSubject,
+)
+theory = (
+    RegulatoryTheoryBuilder("WAREHOUSE")
+    .defeasible("D1", ["operator_certified"], "permitted", priority=5)
+    .fact("operator_certified")
+    .build()
+)
+result = theory.query(Literal.parse("permitted"))
+
 # Federation
 from sm_bridge import SmBridge, SimpleAgent
 bridge = SmBridge(registry_id="my-registry", provider_name="My Org", provider_url="https://example.com")
@@ -166,9 +196,10 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 | [sm-model-card](https://github.com/Sharathvc23/sm-model-card) | 0.2.0 | 43 | None |
 | [sm-model-integrity-layer](https://github.com/Sharathvc23/sm-model-integrity-layer) | 0.2.0 | 153 | None |
 | [sm-model-governance](https://github.com/Sharathvc23/sm-model-governance) | 0.2.0 | 97 | None |
+| [sm-locp](https://github.com/Sharathvc23/sm-locp) | 0.2.0 | 102 | cryptography |
 | sm-airlock | 0.1.0 | 84 | None |
 | sm-enclave | 0.1.0 | 84 | None |
-| **Total** | | **544** | |
+| **Total** | | **646** | |
 
 
 ---
