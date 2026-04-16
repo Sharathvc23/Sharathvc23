@@ -204,4 +204,4 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 
 ---
 
-**Sharath Chandra** — [stellarminds.ai](https://stellarminds.ai) — Research Contribution to [Project NANDA](https://projectnanda.org)
+**Sharath Chandra** — Personal research contributions aligned with [Project NANDA](https://projectnanda.org) standards. [Stellarminds.ai](https://stellarminds.ai)
