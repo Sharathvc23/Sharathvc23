@@ -115,9 +115,13 @@ Persistence Protocol v1 is frozen. Ship your own corpus, your own backend — th
 
 Attribute-level sandbox that restricts what agent plugins can access through allowlist-based access control, rate limiting, and effect staging with commit/discard semantics.
 
-### 7. Decision Staging — sm-enclave *(private)*
+### 7. Decision Staging — [`sm-enclave`](https://github.com/Sharathvc23/sm-enclave)
 
-Speculative execution sandbox that stages agent side effects in isolated contexts with irreversibility gating, priority-ordered atomic commit, and parallel branch execution with winner/loser finalization.
+> AI agents that touch real-world state need to evaluate their options before committing. Otherwise a wrong decision fires hardware that cannot be undone.
+
+Speculative execution sandbox. Stages side effects produced during speculative branch execution in isolated enclaves, commits the winner atomically, discards the losers. Irreversibility gate blocks hardware-touching commands from firing in speculative branches unless explicitly allowed. Pluggable committers per effect type. Zero runtime dependencies.
+
+`pip install git+https://github.com/Sharathvc23/sm-enclave.git`
 
 ---
 
@@ -197,9 +201,9 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 | [sm-model-integrity-layer](https://github.com/Sharathvc23/sm-model-integrity-layer) | 0.2.0 | 153 | None |
 | [sm-model-governance](https://github.com/Sharathvc23/sm-model-governance) | 0.2.0 | 97 | None |
 | [sm-locp](https://github.com/Sharathvc23/sm-locp) | 0.2.0 | 102 | cryptography |
-| sm-airlock | 0.1.0 | 84 | None |
-| sm-enclave | 0.1.0 | 84 | None |
-| **Total** | | **646** | |
+| [sm-enclave](https://github.com/Sharathvc23/sm-enclave) | 0.2.0 | 86 | None |
+| sm-airlock *(private)* | 0.1.1 | 84 | None |
+| **Total** | | **648** | |
 
 
 ---
