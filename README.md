@@ -39,11 +39,8 @@ Each library ships a **small, versioned Protocol surface** and a **public confor
                               |
   +-----------------------------------------------------------+
   |                         MODEL TRUST                       |
-  |                                                           |
-  |  sm-model-       sm-model-     sm-model-       sm-model-  |
-  |  provenance  →   card      →   integrity-  →   governance |
-  |  (identity)     (metadata)      layer          (approval) |
-  |                                (verification)             |
+  |   sm-model-provenance · sm-model-card ·                   |
+  |   sm-model-integrity-layer · sm-model-governance          |
   +-----------------------------------------------------------+
                               |
   +-----------------------------------------------------------+
