@@ -122,6 +122,18 @@ Speculative execution sandbox. Stages side effects produced during speculative b
 
 ---
 
+## Operator Surfaces
+
+### 8. Attestation Renderer — `sm-attest-viewer` *(private)*
+
+> Compliance evidence and operator triage are useless if there's no way to *see* the signed envelopes flowing past in real time. Chat logs are not signed, not rule-citing, and not causal. Operators need a different artefact.
+
+The reference renderer for **Attested Action Envelopes (AAEs)** — the per-action evidence primitive minted by `sm-locp` and conformant rule engines. A React / TypeScript component library that displays an AAE event stream as a forensic, filterable, reverse-chronological timeline. Substrate-neutral by design; domain-neutral by default; conformance-driven via pure exported filter functions.
+
+First TypeScript package in the portfolio. Repository currently private during v0.1 stabilization; npm publication via `@sharathvc/sm-attest-viewer` will follow.
+
+---
+
 ## Federation
 
 ### 0. Transport & Federation — [`sm-bridge`](https://github.com/Sharathvc23/sm-bridge)
@@ -200,7 +212,8 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 | [sm-locp](https://github.com/Sharathvc23/sm-locp) | 0.2.0 | 102 | cryptography |
 | [sm-enclave](https://github.com/Sharathvc23/sm-enclave) | 0.2.0 | 86 | None |
 | sm-airlock *(private)* | 0.1.1 | 84 | None |
-| **Total** | | **648** | |
+| sm-attest-viewer *(private)* | 0.1.0 | 29 | React 19, Radix UI, lucide-react |
+| **Total** | | **677** | |
 
 
 ---
