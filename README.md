@@ -138,17 +138,11 @@ Speculative execution sandbox. Stages side effects produced during speculative b
 
 ## Operator Surfaces Tier
 
-### 8. Attestation Inbox — `sm-attest-viewer` *(private)*
+### 8. Attestation Renderer — `sm-attest-viewer` *(private)*
 
-> Compliance evidence and operator triage are useless if there's no way to *see* the signed envelopes flowing past in real time. Chat logs are not signed, not rule-citing, and not causal. Operators need a different artefact.
+> Compliance evidence and operator triage are useless if there's no way to *see* the signed envelopes flowing past in real time. Operators need a different artefact than a chat log.
 
-The reference renderer for **Attested Action Envelopes (AAEs)** — the per-action evidence primitive minted by `sm-locp` and conformant rule engines. A React / TypeScript component library that displays an AAE event stream as a forensic, filterable, reverse-chronological timeline.
-
-Substrate-neutral by design: connect it to AG-UI, MCP, A2A, a websocket, or a JSONL file — the renderer never opens a connection itself. Domain-neutral by design: no hardcoded taxonomy for classifications, regimes, or action verbs. Conformance-driven: trust-state derivation and filter combinatorics are exported as pure, exhaustively tested functions.
-
-AAE implements the **Attestation pillar** of NANDA's four-pillar architecture (DNS / CA / Orchestration / Attestation), complementing AgentFacts (per-credential identity) and KYA 1.0 (credential-vouching) at the per-action level. The normative wire format lives in the package's `SPEC.md`; the design rationale lives in its `WHITEPAPER.md`.
-
-Repository currently private during v0.1 stabilization; npm publication via `@sharathvc/sm-attest-viewer` will follow.
+Reference renderer for **Attested Action Envelopes (AAEs)** — the per-action evidence primitive minted by `sm-locp`. A React / TypeScript component library that displays AAE streams as forensic, filterable, reverse-chronological timelines.
 
 ---
 
@@ -217,7 +211,6 @@ bridge = SmBridge(registry_id="my-registry", provider_name="My Org", provider_ur
 bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="An AI assistant"))
 ```
 
-A TypeScript / React Operator Surface quickstart will land alongside `sm-attest-viewer` once that repo opens.
 
 ---
 
