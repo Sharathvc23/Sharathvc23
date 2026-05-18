@@ -11,7 +11,7 @@ The industry is scaling the Internet of Agents — AI agents that discover, comm
 
 Critical segments of the autonomous economy — aerospace, defense, maritime logistics, physical infrastructure — operate at the extreme edge. Connectivity is intermittent. Trust must be continuously verified. The penalty for an AI hallucination or unauthorized action can be severe.
 
-To scale AI agents in the enterprise, we need more than discovery. We need **cryptographic model governance**, **offline-capable identity**, **structural regulatory compliance**, and **verifiable capability restriction**.
+To scale AI agents in the enterprise, we need more than discovery. We need **cryptographic model governance**, **offline-capable identity**, **structural regulatory compliance**, **verifiable capability restriction**, and **operator-facing surfaces** that turn signed evidence into something a human can triage in real time.
 
 These libraries are the building blocks.
 
@@ -23,18 +23,30 @@ Each library ships a **small, versioned Protocol surface** and a **public confor
 
 ---
 
-## Two tiers of trust
+## Trust tiers
 
-**Model Trust** answers *"what is this model?"* — identity, metadata, integrity, approval.
+**Operator Surfaces** answer *"how does a human see what the agents are doing?"* — forensic, filterable timelines of signed agent action evidence.
 **Behavioral Trust** answers *"what is this agent allowed to do, right now?"* — regulation, capability, staging.
-**Federation** sits beneath both — how agents find each other on the network.
+**Model Trust** answers *"what is this model?"* — identity, metadata, integrity, approval.
+**Federation** sits beneath all three — how agents find each other on the network.
 
 ```
+  +-----------------------------------------------------------+
+  |                    OPERATOR SURFACES                      |
+  |                       (TS / React)                        |
+  |                                                           |
+  |                  sm-attest-viewer                         |
+  |        renders AAE event streams as forensic              |
+  |        filterable timelines for compliance ops            |
+  +--------------------------- ↑ -----------------------------+
+                               |  W3C VC streams (AAE wire envelope)
+                               |
   +-----------------------------------------------------------+
   |                      BEHAVIORAL TRUST                     |
   |                                                           |
   |    sm-locp     →     sm-airlock    →     sm-enclave       |
   |  (compliance)     (capabilities)      (speculative exec)  |
+  |  *emits AAEs*                                             |
   +-----------------------------------------------------------+
                               |
   +-----------------------------------------------------------+
@@ -49,6 +61,8 @@ Each library ships a **small, versioned Protocol surface** and a **public confor
   |   sm-bridge  —  registry endpoints, Quilt delta sync      |
   +-----------------------------------------------------------+
 ```
+
+Substrate tiers (Behavioral / Model / Federation) are Python-first because they run where agents run. The Operator Surfaces tier is TypeScript / React because it runs where humans look — browsers, dashboards, embedded panels.
 
 ---
 
@@ -100,7 +114,7 @@ Three-plane ML governance (Training → Approval → Serving). Ed25519 cryptogra
 
 > An approved model can still do the wrong thing. Regulatory compliance is about what the *agent* does in the world, not what the *model* is.
 
-The Open Compliance Protocol (OCP) — a defeasible-logic engine, machine-readable regulations (MRR) format, and W3C Verifiable Credential issuance layer. Agents observe their operational state, check it against regulatory theories, and produce cryptographic proofs of compliance that any third party can verify without re-running the evaluation.
+The Open Compliance Protocol (OCP) — a defeasible-logic engine, machine-readable regulations (MRR) format, and W3C Verifiable Credential issuance layer. Agents observe their operational state, check it against regulatory theories, and produce cryptographic proofs of compliance that any third party can verify without re-running the evaluation. The VC issuance layer is what mints **Attested Action Envelopes (AAEs)** — the per-action evidence primitive consumed by `sm-attest-viewer`.
 
 Persistence Protocol v1 is frozen. Ship your own corpus, your own backend — the engine is indifferent as long as your implementation passes the public conformance suite.
 
@@ -122,15 +136,19 @@ Speculative execution sandbox. Stages side effects produced during speculative b
 
 ---
 
-## Operator Surfaces
+## Operator Surfaces Tier
 
-### 8. Attestation Renderer — `sm-attest-viewer` *(private)*
+### 8. Attestation Inbox — `sm-attest-viewer` *(private)*
 
 > Compliance evidence and operator triage are useless if there's no way to *see* the signed envelopes flowing past in real time. Chat logs are not signed, not rule-citing, and not causal. Operators need a different artefact.
 
-The reference renderer for **Attested Action Envelopes (AAEs)** — the per-action evidence primitive minted by `sm-locp` and conformant rule engines. A React / TypeScript component library that displays an AAE event stream as a forensic, filterable, reverse-chronological timeline. Substrate-neutral by design; domain-neutral by default; conformance-driven via pure exported filter functions.
+The reference renderer for **Attested Action Envelopes (AAEs)** — the per-action evidence primitive minted by `sm-locp` and conformant rule engines. A React / TypeScript component library that displays an AAE event stream as a forensic, filterable, reverse-chronological timeline.
 
-First TypeScript package in the portfolio. Repository currently private during v0.1 stabilization; npm publication via `@sharathvc/sm-attest-viewer` will follow.
+Substrate-neutral by design: connect it to AG-UI, MCP, A2A, a websocket, or a JSONL file — the renderer never opens a connection itself. Domain-neutral by design: no hardcoded taxonomy for classifications, regimes, or action verbs. Conformance-driven: trust-state derivation and filter combinatorics are exported as pure, exhaustively tested functions.
+
+AAE implements the **Attestation pillar** of NANDA's four-pillar architecture (DNS / CA / Orchestration / Attestation), complementing AgentFacts (per-credential identity) and KYA 1.0 (credential-vouching) at the per-action level. The normative wire format lives in the package's `SPEC.md`; the design rationale lives in its `WHITEPAPER.md`.
+
+Repository currently private during v0.1 stabilization; npm publication via `@sharathvc/sm-attest-viewer` will follow.
 
 ---
 
@@ -150,8 +168,9 @@ A reference implementation for NANDA-compatible registry endpoints and Quilt-sty
 
 | Principle | How |
 |-----------|-----|
-| **Zero dependencies** | All core libraries use only the Python standard library. Crypto and database backends are optional extras. |
-| **Protocol-based** | Extension points use `@runtime_checkable` protocols — no forced inheritance, no vendor lock-in. |
+| **Zero dependencies** (Python tier) | All core Python libraries use only the standard library. Crypto and database backends are optional extras. |
+| **Substrate-neutral** (TS tier) | The renderer accepts events as a prop. It never opens connections, polls endpoints, or makes network calls. |
+| **Protocol-based** | Extension points use `@runtime_checkable` protocols (Python) or typed event arrays (TS) — no forced inheritance, no vendor lock-in. |
 | **Conformance-driven** | Every versioned Protocol ships with a public test suite. Backends prove compliance by passing the same tests as the reference implementation. |
 | **Fail-fast validation** | Invalid data is rejected at construction time, not discovered downstream. |
 | **Composable** | Each library answers one question. Stack them for full governance or use any one standalone. |
@@ -180,7 +199,7 @@ coord = GovernanceCoordinator()
 output = coord.complete_training("my-model", "sha256:abc", {"loss": 0.28})
 approval = coord.submit_for_governance(output, approved_by="governance-lead")
 
-# Regulatory compliance
+# Regulatory compliance — produces AAEs
 from sm_locp import (
     RegulatoryTheoryBuilder, Literal, VCGenerator, ComplianceCredentialSubject,
 )
@@ -197,6 +216,8 @@ from sm_bridge import SmBridge, SimpleAgent
 bridge = SmBridge(registry_id="my-registry", provider_name="My Org", provider_url="https://example.com")
 bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="An AI assistant"))
 ```
+
+A TypeScript / React Operator Surface quickstart will land alongside `sm-attest-viewer` once that repo opens.
 
 ---
 
