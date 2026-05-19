@@ -138,7 +138,7 @@ Speculative execution sandbox. Stages side effects produced during speculative b
 
 ## Operator Surfaces Tier
 
-### 8. Attestation Renderer — `sm-attest-viewer` *(private)*
+### 8. Attestation Renderer — [`sm-attest-viewer`](https://github.com/Sharathvc23/sm-attest-viewer)
 
 > Compliance evidence and operator triage are useless if there's no way to *see* the signed envelopes flowing past in real time. Operators need a different artefact than a chat log.
 
@@ -226,7 +226,7 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 | [sm-locp](https://github.com/Sharathvc23/sm-locp) | 0.2.0 | 102 | cryptography |
 | [sm-enclave](https://github.com/Sharathvc23/sm-enclave) | 0.2.0 | 86 | None |
 | sm-airlock *(private)* | 0.1.1 | 84 | None |
-| sm-attest-viewer *(private)* | 0.1.0 | 29 | React 19, Radix UI, lucide-react |
+| [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.1.0 | 29 | React 19, Radix UI, lucide-react |
 | **Total** | | **677** | |
 
 
