@@ -35,9 +35,9 @@ Each library ships a **small, versioned Protocol surface** and a **public confor
   |                    OPERATOR SURFACES                      |
   |                       (TS / React)                        |
   |                                                           |
-  |                  sm-attest-viewer                         |
-  |        renders AAE event streams as forensic              |
-  |        filterable timelines for compliance ops            |
+  |  sm-attest-viewer        chronological forensic timeline  |
+  |  sm-decision-inspector   HITL workbench, M-of-N quorum    |
+  |  sm-attest-auditor       bidirectional audit drill        |
   +--------------------------- ↑ -----------------------------+
                                |  W3C VC streams (AAE wire envelope)
                                |
@@ -142,7 +142,23 @@ Speculative execution sandbox. Stages side effects produced during speculative b
 
 > Compliance evidence and operator triage are useless if there's no way to *see* the signed envelopes flowing past in real time. Operators need a different artefact than a chat log.
 
-Reference renderer for **Attested Action Envelopes (AAEs)** — the per-action evidence primitive minted by `sm-locp`. A React / TypeScript component library that displays AAE streams as forensic, filterable, reverse-chronological timelines.
+Reference renderer for **Attested Action Envelopes (AAEs)** — the per-action evidence primitive minted by `sm-locp`. A React / TypeScript component library that displays AAE streams as forensic, filterable, reverse-chronological timelines. As of v0.2, the renderer surfaces the four AAE envelope kinds (`action`, `decision`, `belief`, `checkpoint`) with kind-specific visual distinctions while remaining backward-compatible with v0.1 producers.
+
+---
+
+### 9. HITL Workbench — sm-decision-inspector *(private)*
+
+> A chronological timeline shows that decisions exist. It cannot ergonomically serve the multi-party gesture surface where operators actually authorize or deny — that demands a different primitive.
+
+Reference workbench for the `type: "decision"` envelope variant. Surfaces the proposed action, the M-of-N countersignature roster, the live quorum chip, and the operator approve / deny controls as a forensic, gesture-safe HITL surface. Locks the gesture surface once quorum is reached so an operator never accidentally double-signs.
+
+---
+
+### 10. Bidirectional Audit Drill — sm-attest-auditor *(private)*
+
+> Forward envelope chains alone do not solve forensic audit, because an auditor often arrives after an incident — starting from a known checkpoint commitment and needing to prove a specific envelope was covered by it in O(log N) sibling-path verification.
+
+Reference renderer for bidirectional audit over AAE envelope chains. Walks forward chains via `predecessor_hash` (cycle-safe, gap-tolerant) and verifies reverse merkle inclusion proofs from checkpoint envelopes per RFC 6962 SHA-256 — runs the cryptographic verification in-browser via Web Crypto, with no proprietary library on the audit path.
 
 ---
 
@@ -218,16 +234,18 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 
 | Package | Version | Tests | Dependencies |
 |---------|:-------:|:-----:|:------------:|
-| [sm-bridge](https://github.com/Sharathvc23/sm-bridge) | 0.3.0 | 40 | FastAPI, Pydantic |
+| [sm-bridge](https://github.com/Sharathvc23/sm-bridge) | 0.3.1 | 40 | FastAPI, Pydantic |
 | [sm-model-provenance](https://github.com/Sharathvc23/sm-model-provenance) | 0.2.0 | 43 | None |
 | [sm-model-card](https://github.com/Sharathvc23/sm-model-card) | 0.2.0 | 43 | None |
 | [sm-model-integrity-layer](https://github.com/Sharathvc23/sm-model-integrity-layer) | 0.2.0 | 153 | None |
 | [sm-model-governance](https://github.com/Sharathvc23/sm-model-governance) | 0.2.0 | 97 | None |
 | [sm-locp](https://github.com/Sharathvc23/sm-locp) | 0.2.0 | 102 | cryptography |
 | [sm-enclave](https://github.com/Sharathvc23/sm-enclave) | 0.2.0 | 86 | None |
-| sm-airlock *(private)* | 0.1.1 | 84 | None |
-| [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.1.0 | 29 | React 19, Radix UI, lucide-react |
-| **Total** | | **677** | |
+| sm-airlock *(private)* | 0.2.0 | 84 | None |
+| [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.2.1 | 69 | React 19, Radix UI, lucide-react |
+| sm-decision-inspector *(private)* | 0.1.0 | 45 | React 19, Radix UI, lucide-react |
+| sm-attest-auditor *(private)* | 0.1.0 | 35 | React 19, Radix UI, lucide-react |
+| **Total** | | **797** | |
 
 
 ---
