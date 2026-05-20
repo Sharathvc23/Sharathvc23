@@ -246,9 +246,9 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 | [sm-locp](https://github.com/Sharathvc23/sm-locp) | 0.2.0 | 102 | cryptography |
 | [sm-enclave](https://github.com/Sharathvc23/sm-enclave) | 0.2.0 | 86 | None |
 | [sm-airlock](https://github.com/Sharathvc23/sm-airlock) | 0.2.0 | 78 | None |
-| [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.2.1 | 69 | React 19, Radix UI, lucide-react |
-| [sm-decision-inspector](https://github.com/Sharathvc23/sm-decision-inspector) | 0.1.0 | 45 | React 19, Radix UI, lucide-react |
-| [sm-attest-auditor](https://github.com/Sharathvc23/sm-attest-auditor) | 0.1.0 | 35 | React 19, Radix UI, lucide-react |
+| [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.2.3 | 69 | React 19, Radix UI, lucide-react |
+| [sm-decision-inspector](https://github.com/Sharathvc23/sm-decision-inspector) | 0.1.1 | 45 | React 19, Radix UI, lucide-react |
+| [sm-attest-auditor](https://github.com/Sharathvc23/sm-attest-auditor) | 0.1.1 | 35 | React 19, Radix UI, lucide-react |
 | **Total** | | **791** | |
 
 
