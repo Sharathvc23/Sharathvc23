@@ -122,9 +122,13 @@ Persistence Protocol v1 is frozen. Ship your own corpus, your own backend — th
 
 ---
 
-### 6. Capability Restriction — sm-airlock *(private)*
+### 6. Capability Restriction — [`sm-airlock`](https://github.com/Sharathvc23/sm-airlock)
 
-Attribute-level sandbox that restricts what agent plugins can access through allowlist-based access control, rate limiting, and effect staging with commit/discard semantics.
+> A plugin system without an isolation boundary is an attack surface. Plugins must reach the host agent to be useful, but unrestricted access leaks state, bypasses tenant isolation, and floods the host with unbounded calls.
+
+Allowlist-gated plugin sandbox for autonomous agents. The Airlock proxy denies every attribute access by default and permits only what the caller explicitly declares via `AllowlistSpec`. Per-method sliding-window rate limits, Ed25519-signed plugin manifests for supply-chain integrity, and a violation-callback hook for audit integration. Zero runtime dependencies.
+
+`pip install git+https://github.com/Sharathvc23/sm-airlock.git`
 
 ### 7. Decision Staging — [`sm-enclave`](https://github.com/Sharathvc23/sm-enclave)
 
@@ -241,11 +245,11 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 | [sm-model-governance](https://github.com/Sharathvc23/sm-model-governance) | 0.2.0 | 97 | None |
 | [sm-locp](https://github.com/Sharathvc23/sm-locp) | 0.2.0 | 102 | cryptography |
 | [sm-enclave](https://github.com/Sharathvc23/sm-enclave) | 0.2.0 | 86 | None |
-| sm-airlock *(private)* | 0.2.0 | 84 | None |
+| [sm-airlock](https://github.com/Sharathvc23/sm-airlock) | 0.2.0 | 78 | None |
 | [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.2.1 | 69 | React 19, Radix UI, lucide-react |
 | [sm-decision-inspector](https://github.com/Sharathvc23/sm-decision-inspector) | 0.1.0 | 45 | React 19, Radix UI, lucide-react |
 | [sm-attest-auditor](https://github.com/Sharathvc23/sm-attest-auditor) | 0.1.0 | 35 | React 19, Radix UI, lucide-react |
-| **Total** | | **797** | |
+| **Total** | | **791** | |
 
 
 ---
