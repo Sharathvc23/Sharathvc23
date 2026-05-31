@@ -21,6 +21,8 @@ These libraries are the building blocks.
 
 Each library ships a **small, versioned Protocol surface** and a **public conformance test suite**. Any third-party backend — including proprietary ones — plugs in behind the same Protocol and proves compliance against the same public tests. The open substrate is the standard; what you build above it is yours. No vendor lock-in, no forked forks.
 
+Compliance is **mechanical, not declarative**. A runtime proves it by shipping a signed [`sm-conformance`](https://github.com/Sharathvc23/sm-conformance) badge — re-verifiable offline by anyone holding the runtime's `did:key`, with no service on the path. That badge mechanism is the substrate every library shares (see [Conformance](#conformance--the-shared-substrate) below).
+
 ---
 
 ## Trust tiers
@@ -178,6 +180,20 @@ A reference implementation for NANDA-compatible registry endpoints and Quilt-sty
 
 ---
 
+## Conformance — the shared substrate
+
+### [`sm-conformance`](https://github.com/Sharathvc23/sm-conformance)
+
+> An open protocol is only real if compliance is *checkable*. Otherwise "compliant" is a README claim, and interoperation degrades to trust-me.
+
+The mechanism behind the conformance-driven principle. It is **orthogonal to the four tiers** — not one of them, but the substrate that lets any of them prove it is honestly implemented. A runtime runs a tier's vectors-driven suite, then ships a small JSON **badge** signed by its own Ed25519 key, recording which suite it passed (pinned by a `suite_digest` over the vector corpus) and the pass/fail counts. Any party re-verifies the badge offline against the runtime's `did:key` — no service, no proprietary library on the path. Self-signed badges climb a trust ladder (self → lab counter-signed → attested CI) for registry admission.
+
+Every Protocol in this portfolio defines its own vectors; `sm-conformance` is the single mechanism that turns "passed them" into a portable, tamper-evident artifact a registry can demand. That is what makes federation of independently-built runtimes possible without a central gatekeeper.
+
+`pip install git+https://github.com/Sharathvc23/sm-conformance.git`
+
+---
+
 ## Design Principles
 
 | Principle | How |
@@ -249,7 +265,8 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 | [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.2.3 | 69 | React 19, Radix UI, lucide-react |
 | [sm-decision-inspector](https://github.com/Sharathvc23/sm-decision-inspector) | 0.1.1 | 45 | React 19, Radix UI, lucide-react |
 | [sm-attest-auditor](https://github.com/Sharathvc23/sm-attest-auditor) | 0.1.1 | 35 | React 19, Radix UI, lucide-react |
-| **Total** | | **791** | |
+| [sm-conformance](https://github.com/Sharathvc23/sm-conformance) | 0.1.0 | 46 | cryptography, base58 |
+| **Total** | | **837** | |
 
 
 ---
