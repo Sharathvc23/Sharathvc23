@@ -84,7 +84,7 @@ anyone holding the runtime's `did:key` — no service on the path, no vendor loc
 |---|---|---|
 | [`sm-bridge`](https://github.com/Sharathvc23/sm-bridge) | NANDA-compatible registry endpoints + Quilt delta sync; drop-in FastAPI router | `pip install git+https://github.com/Sharathvc23/sm-bridge.git` |
 | [`sm-arp`](https://github.com/Sharathvc23/sm-arp) | Agency Receipt Protocol — per-action, Ed25519-signed, JCS-canonical, hash-chained receipts | `pip install sm-arp` |
-| [`sm-org-server`](https://github.com/Sharathvc23/sm-org-server) | Minimal, backend-agnostic **server** implementing the Chapter Protocol wire (~550 lines) | `pip install sm-org-server` |
+| [`sm-org-server`](https://github.com/Sharathvc23/sm-org-server) | Minimal, backend-agnostic **server** implementing the Chapter Protocol wire (~550 lines) | `pip install git+https://github.com/Sharathvc23/sm-org-server.git` |
 | [`sm-org-agent`](https://github.com/Sharathvc23/sm-org-agent) | The **agent** client signing surface — did:key identity, canonical strings, Ed25519 headers | `pip install sm-org-agent` |
 | [`sm-federation`](https://github.com/Sharathvc23/sm-federation) | Cross-server federation descriptor + envelope spec | `pip install git+https://github.com/Sharathvc23/sm-federation.git` |
 </details>
