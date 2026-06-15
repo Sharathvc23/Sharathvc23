@@ -1,214 +1,125 @@
 # The Enterprise Internet of AI Agents
 
 **Open-source primitives for decentralized, cryptographically governed AI agent networks.**
-**Built on [Project NANDA](https://projectnanda.org) standards.**
+**Aligned with [Project NANDA](https://projectnanda.org) standards.**
 
 ---
 
 ## The Vision
 
-The industry is scaling the Internet of Agents — AI agents that discover, communicate, and collaborate across the web. But the mainstream narrative assumes reliable cloud connectivity, abundant compute, and low-stakes consumer tasks.
+The industry is scaling the Internet of Agents. But the mainstream narrative assumes reliable
+cloud connectivity, abundant compute, and low-stakes consumer tasks. The autonomous economy at
+the extreme edge — aerospace, defense, maritime, physical infrastructure — needs more:
+**cryptographic model governance**, **offline-capable identity**, **structural compliance**,
+**verifiable capability restriction**, and **operator surfaces** that turn signed evidence into
+something a human can triage in real time. These libraries are the building blocks.
 
-Critical segments of the autonomous economy — aerospace, defense, maritime logistics, physical infrastructure — operate at the extreme edge. Connectivity is intermittent. Trust must be continuously verified. The penalty for an AI hallucination or unauthorized action can be severe.
-
-To scale AI agents in the enterprise, we need more than discovery. We need **cryptographic model governance**, **offline-capable identity**, **structural regulatory compliance**, **verifiable capability restriction**, and **operator-facing surfaces** that turn signed evidence into something a human can triage in real time.
-
-These libraries are the building blocks.
-
----
-
-## How the libraries fit together
-
-Each library ships a **small, versioned Protocol surface** and a **public conformance test suite**. Any third-party backend — including proprietary ones — plugs in behind the same Protocol and proves compliance against the same public tests. The open substrate is the standard; what you build above it is yours. No vendor lock-in, no forked forks.
-
-Compliance is **mechanical, not declarative**. A runtime proves it by shipping a signed [`sm-conformance`](https://github.com/Sharathvc23/sm-conformance) badge — re-verifiable offline by anyone holding the runtime's `did:key`, with no service on the path. That badge mechanism is the substrate every library shares (see [Conformance](#conformance--the-shared-substrate) below).
+Each ships a **small, versioned Protocol surface** and a **public conformance suite**. Any backend
+— including proprietary ones — plugs in behind the same Protocol and proves compliance against the
+same public tests. Compliance is **mechanical, not declarative**: a runtime ships a signed
+[`sm-conformance`](https://github.com/Sharathvc23/sm-conformance) badge, re-verifiable offline by
+anyone holding the runtime's `did:key` — no service on the path, no vendor lock-in.
 
 ---
 
-## Trust tiers
-
-**Operator Surfaces** answer *"how does a human see what the agents are doing?"* — forensic, filterable timelines of signed agent action evidence.
-**Behavioral Trust** answers *"what is this agent allowed to do, right now?"* — regulation, capability, staging.
-**Model Trust** answers *"what is this model?"* — identity, metadata, integrity, approval.
-**Federation** sits beneath all three — how agents find each other on the network.
+## The map
 
 ```
   +-----------------------------------------------------------+
-  |                    OPERATOR SURFACES                      |
-  |                       (TS / React)                        |
-  |                                                           |
-  |  sm-attest-viewer        chronological forensic timeline  |
-  |  sm-decision-inspector   HITL workbench, M-of-N quorum    |
-  |  sm-attest-auditor       bidirectional audit drill        |
+  |          OPERATOR SURFACES   (TS / React)                 |
+  |   attest-viewer · decision-inspector · attest-auditor     |
   +--------------------------- ↑ -----------------------------+
-                               |  W3C VC streams (AAE wire envelope)
-                               |
+                               |  W3C VC streams (AAE envelope)
   +-----------------------------------------------------------+
-  |                      BEHAVIORAL TRUST                     |
-  |                                                           |
-  |    sm-locp     →     sm-airlock    →     sm-enclave       |
-  |  (compliance)     (capabilities)      (speculative exec)  |
-  |  *emits AAEs*                                             |
+  |          BEHAVIORAL TRUST   locp → airlock → enclave      |
   +-----------------------------------------------------------+
-                              |
+  |          MODEL TRUST   provenance · card · integrity · gov|
   +-----------------------------------------------------------+
-  |                         MODEL TRUST                       |
-  |   sm-model-provenance · sm-model-card ·                   |
-  |   sm-model-integrity-layer · sm-model-governance          |
-  +-----------------------------------------------------------+
-                              |
-  +-----------------------------------------------------------+
-  |                         FEDERATION                        |
-  |                                                           |
-  |   sm-bridge  —  registry endpoints, Quilt delta sync      |
+  |          FEDERATION   sm-bridge · NANDA Chapter Protocol  |
   +-----------------------------------------------------------+
 ```
 
-Substrate tiers (Behavioral / Model / Federation) are Python-first because they run where agents run. The Operator Surfaces tier is TypeScript / React because it runs where humans look — browsers, dashboards, embedded panels.
+*Substrate tiers are Python-first (they run where agents run); Operator Surfaces are TS / React
+(they run where humans look).*
 
 ---
 
-## Model Trust Tier
+## The libraries
 
-### 1. Base Identity — [`sm-model-provenance`](https://github.com/Sharathvc23/sm-model-provenance)
+<details>
+<summary><b>🧠 Model Trust</b> — what is this model? · identity · cards · integrity · governance (4)</summary>
 
-> Agents need a standardized way to broadcast who they are and what model powers them, without heavy dependencies in constrained edge environments.
+| Library | What it does | Install |
+|---|---|---|
+| [`sm-model-provenance`](https://github.com/Sharathvc23/sm-model-provenance) | Zero-dep model identity dataclass (id, provider, version, tier); maps into AgentFacts | `pip install git+https://github.com/Sharathvc23/sm-model-provenance.git` |
+| [`sm-model-card`](https://github.com/Sharathvc23/sm-model-card) | Unified model-card schema; 4-state lifecycle with transition guards | `pip install git+https://github.com/Sharathvc23/sm-model-card.git` |
+| [`sm-model-integrity-layer`](https://github.com/Sharathvc23/sm-model-integrity-layer) | Offline SHA-256 weight hashing, HMAC attestation, lineage; blocks base-swap attacks | `pip install git+https://github.com/Sharathvc23/sm-model-integrity-layer.git` |
+| [`sm-model-governance`](https://github.com/Sharathvc23/sm-model-governance) | 3-plane ML governance; Ed25519 sigs, M-of-N quorum, drift auto-revocation | `pip install git+https://github.com/Sharathvc23/sm-model-governance.git` |
+</details>
 
-A zero-dependency Python dataclass capturing core model identity (model ID, provider, version, governance tier). Omit-when-empty serialization keeps payloads compact. Maps into the JSON shapes required by NANDA AgentFacts and decision envelopes.
+<details>
+<summary><b>🛡️ Behavioral Trust</b> — what may this agent do, right now? · compliance · capability · staging (3)</summary>
 
-`pip install git+https://github.com/Sharathvc23/sm-model-provenance.git`
+| Library | What it does | Install |
+|---|---|---|
+| [`sm-locp`](https://github.com/Sharathvc23/sm-locp) | Open Compliance Protocol — defeasible-logic engine + W3C VC issuance; mints **AAEs** | `pip install git+https://github.com/Sharathvc23/sm-locp.git` |
+| [`sm-airlock`](https://github.com/Sharathvc23/sm-airlock) | Allowlist-gated plugin sandbox; deny-by-default, sliding-window rate limits, signed manifests | `pip install git+https://github.com/Sharathvc23/sm-airlock.git` |
+| [`sm-enclave`](https://github.com/Sharathvc23/sm-enclave) | Speculative-execution sandbox; stages effects, commits the winner, irreversibility gate | `pip install git+https://github.com/Sharathvc23/sm-enclave.git` |
+</details>
 
----
+<details>
+<summary><b>👁️ Operator Surfaces</b> — how does a human see what the agents are doing? (TS / React, 3)</summary>
 
-### 2. Metadata & Lifecycle — [`sm-model-card`](https://github.com/Sharathvc23/sm-model-card)
+| Library | What it does |
+|---|---|
+| [`sm-attest-viewer`](https://github.com/Sharathvc23/sm-attest-viewer) | Renders AAE streams as forensic, filterable, reverse-chronological timelines |
+| [`sm-decision-inspector`](https://github.com/Sharathvc23/sm-decision-inspector) | HITL workbench for `decision` envelopes; M-of-N quorum chip, gesture-safe approve / deny |
+| [`sm-attest-auditor`](https://github.com/Sharathvc23/sm-attest-auditor) | Bidirectional audit drill; RFC 6962 merkle inclusion verified in-browser via Web Crypto |
+</details>
 
-> Enterprise environments require structured documentation of an AI's capabilities, training metrics, and deployment lifecycle.
+<details>
+<summary><b>🌐 Federation &amp; NANDA Chapter Protocol</b> — how agents find, join, and trust each other (5)</summary>
 
-A unified model card schema for federated registries. Covers LoRA adapters, edge ONNX, federated learning, and heuristic models under a single validated dataclass. Four-state lifecycle (shadow → ready → deprecated → archived) with transition guards.
+| Library | What it does | Install |
+|---|---|---|
+| [`sm-bridge`](https://github.com/Sharathvc23/sm-bridge) | NANDA-compatible registry endpoints + Quilt delta sync; drop-in FastAPI router | `pip install git+https://github.com/Sharathvc23/sm-bridge.git` |
+| [`sm-arp`](https://github.com/Sharathvc23/sm-arp) | Agency Receipt Protocol — per-action, Ed25519-signed, JCS-canonical, hash-chained receipts | `pip install sm-arp` |
+| [`sm-org-server`](https://github.com/Sharathvc23/sm-org-server) | Minimal, backend-agnostic **server** implementing the Chapter Protocol wire (~550 lines) | `pip install sm-org-server` |
+| [`sm-org-agent`](https://github.com/Sharathvc23/sm-org-agent) | The **agent** client signing surface — did:key identity, canonical strings, Ed25519 headers | `pip install sm-org-agent` |
+| [`sm-federation`](https://github.com/Sharathvc23/sm-federation) | Cross-server federation descriptor + envelope spec | `pip install git+https://github.com/Sharathvc23/sm-federation.git` |
+</details>
 
-`pip install git+https://github.com/Sharathvc23/sm-model-card.git`
+<details>
+<summary><b>✅ Conformance</b> — the shared substrate that makes "compliant" checkable</summary>
 
----
+[`sm-conformance`](https://github.com/Sharathvc23/sm-conformance) is orthogonal to the four tiers —
+not one of them, but the substrate that lets any of them prove it is honestly implemented. A runtime
+runs a tier's vectors-driven suite, then ships a small JSON **badge** signed by its own Ed25519 key,
+recording which suite it passed (pinned by a `suite_digest` over the vector corpus) and the pass/fail
+counts. Any party re-verifies the badge offline against the runtime's `did:key` — no service, no
+proprietary library on the path. It ships a trust ladder — **self-signed** badge and **lab
+counter-signature** — with `--require-countersigned` admission gates, so a registry can *demand* a
+trusted lab's attestation rather than accept a runtime's self-claim.
 
-### 3. Cryptographic Verification — [`sm-model-integrity-layer`](https://github.com/Sharathvc23/sm-model-integrity-layer)
-
-> In a decentralized network, systems must mathematically verify an agent hasn't been compromised in transit or loaded with unauthorized model weights.
-
-An additive integrity gate. Offline SHA-256 weight hashing, HMAC-SHA256 attestation, model lineage tracking, and 6 built-in governance policies. Prevents base-swapping attacks. Zero runtime dependencies.
-
-`pip install git+https://github.com/Sharathvc23/sm-model-integrity-layer.git`
-
----
-
-### 4. Approval & Drift — [`sm-model-governance`](https://github.com/Sharathvc23/sm-model-governance)
-
-> AI cannot autonomously execute high-stakes actions without a legally defensible audit trail and verifiable oversight.
-
-Three-plane ML governance (Training → Approval → Serving). Ed25519 cryptographic signatures, M-of-N multi-party quorum, time-bounded approvals, and autonomous drift detection with auto-revocation. Designed for aerospace and defense compliance frameworks.
-
-`pip install git+https://github.com/Sharathvc23/sm-model-governance.git`
-
----
-
-## Behavioral Trust Tier
-
-### 5. Regulatory Compliance — [`sm-locp`](https://github.com/Sharathvc23/sm-locp)
-
-> An approved model can still do the wrong thing. Regulatory compliance is about what the *agent* does in the world, not what the *model* is.
-
-The Open Compliance Protocol (OCP) — a defeasible-logic engine, machine-readable regulations (MRR) format, and W3C Verifiable Credential issuance layer. Agents observe their operational state, check it against regulatory theories, and produce cryptographic proofs of compliance that any third party can verify without re-running the evaluation. The VC issuance layer is what mints **Attested Action Envelopes (AAEs)** — the per-action evidence primitive consumed by `sm-attest-viewer`.
-
-Persistence Protocol v1 is frozen. Ship your own corpus, your own backend — the engine is indifferent as long as your implementation passes the public conformance suite.
-
-`pip install git+https://github.com/Sharathvc23/sm-locp.git`
-
----
-
-### 6. Capability Restriction — [`sm-airlock`](https://github.com/Sharathvc23/sm-airlock)
-
-> A plugin system without an isolation boundary is an attack surface. Plugins must reach the host agent to be useful, but unrestricted access leaks state, bypasses tenant isolation, and floods the host with unbounded calls.
-
-Allowlist-gated plugin sandbox for autonomous agents. The Airlock proxy denies every attribute access by default and permits only what the caller explicitly declares via `AllowlistSpec`. Per-method sliding-window rate limits, Ed25519-signed plugin manifests for supply-chain integrity, and a violation-callback hook for audit integration. Zero runtime dependencies.
-
-`pip install git+https://github.com/Sharathvc23/sm-airlock.git`
-
-### 7. Decision Staging — [`sm-enclave`](https://github.com/Sharathvc23/sm-enclave)
-
-> AI agents that touch real-world state need to evaluate their options before committing. Otherwise a wrong decision fires hardware that cannot be undone.
-
-Speculative execution sandbox. Stages side effects produced during speculative branch execution in isolated enclaves, commits the winner atomically, discards the losers. Irreversibility gate blocks hardware-touching commands from firing in speculative branches unless explicitly allowed. Pluggable committers per effect type. Zero runtime dependencies.
-
-`pip install git+https://github.com/Sharathvc23/sm-enclave.git`
-
----
-
-## Operator Surfaces Tier
-
-### 8. Attestation Renderer — [`sm-attest-viewer`](https://github.com/Sharathvc23/sm-attest-viewer)
-
-> Compliance evidence and operator triage are useless if there's no way to *see* the signed envelopes flowing past in real time. Operators need a different artefact than a chat log.
-
-Reference renderer for **Attested Action Envelopes (AAEs)** — the per-action evidence primitive minted by `sm-locp`. A React / TypeScript component library that displays AAE streams as forensic, filterable, reverse-chronological timelines. As of v0.2, the renderer surfaces the four AAE envelope kinds (`action`, `decision`, `belief`, `checkpoint`) with kind-specific visual distinctions while remaining backward-compatible with v0.1 producers.
-
----
-
-### 9. HITL Workbench — [`sm-decision-inspector`](https://github.com/Sharathvc23/sm-decision-inspector)
-
-> A chronological timeline shows that decisions exist. It cannot ergonomically serve the multi-party gesture surface where operators actually authorize or deny — that demands a different primitive.
-
-Reference workbench for the `type: "decision"` envelope variant. Surfaces the proposed action, the M-of-N countersignature roster, the live quorum chip, and the operator approve / deny controls as a forensic, gesture-safe HITL surface. Locks the gesture surface once quorum is reached so an operator never accidentally double-signs.
-
----
-
-### 10. Bidirectional Audit Drill — [`sm-attest-auditor`](https://github.com/Sharathvc23/sm-attest-auditor)
-
-> Forward envelope chains alone do not solve forensic audit, because an auditor often arrives after an incident — starting from a known checkpoint commitment and needing to prove a specific envelope was covered by it in O(log N) sibling-path verification.
-
-Reference renderer for bidirectional audit over AAE envelope chains. Walks forward chains via `predecessor_hash` (cycle-safe, gap-tolerant) and verifies reverse merkle inclusion proofs from checkpoint envelopes per RFC 6962 SHA-256 — runs the cryptographic verification in-browser via Web Crypto, with no proprietary library on the audit path.
-
----
-
-## Federation
-
-### 0. Transport & Federation — [`sm-bridge`](https://github.com/Sharathvc23/sm-bridge)
-
-> Exposing enterprise agents to a federated network should not require rewriting an entire database or implementing complex sync protocols from scratch.
-
-A reference implementation for NANDA-compatible registry endpoints and Quilt-style delta synchronization. Drop-in FastAPI router, DID/handle parsing, thread-safe delta store, and a protocol-based converter for integrating with any internal data model.
-
-`pip install git+https://github.com/Sharathvc23/sm-bridge.git`
-
----
-
-## Conformance — the shared substrate
-
-### [`sm-conformance`](https://github.com/Sharathvc23/sm-conformance)
-
-> An open protocol is only real if compliance is *checkable*. Otherwise "compliant" is a README claim, and interoperation degrades to trust-me.
-
-The mechanism behind the conformance-driven principle. It is **orthogonal to the four tiers** — not one of them, but the substrate that lets any of them prove it is honestly implemented. A runtime runs a tier's vectors-driven suite, then ships a small JSON **badge** signed by its own Ed25519 key, recording which suite it passed (pinned by a `suite_digest` over the vector corpus) and the pass/fail counts. Any party re-verifies the badge offline against the runtime's `did:key` — no service, no proprietary library on the path. v0.1 ships the first two rungs of a trust ladder — the **self-signed** badge and a **lab counter-signature** — with `--require-countersigned` admission gates, so a registry can *demand* a trusted lab's attestation rather than accept a runtime's self-claim (attested-CI is the next rung).
-
-Every Protocol in this portfolio defines its own vectors; `sm-conformance` is the single mechanism that turns "passed them" into a portable, tamper-evident artifact a registry can demand. That is what makes federation of independently-built runtimes possible without a central gatekeeper.
-
-`pip install git+https://github.com/Sharathvc23/sm-conformance.git`
+`pip install sm-conformance`
+</details>
 
 ---
 
 ## Design Principles
 
 | Principle | How |
-|-----------|-----|
-| **Zero dependencies** (Python tier) | All core Python libraries use only the standard library. Crypto and database backends are optional extras. |
-| **Substrate-neutral** (TS tier) | The renderer accepts events as a prop. It never opens connections, polls endpoints, or makes network calls. |
-| **Protocol-based** | Extension points use `@runtime_checkable` protocols (Python) or typed event arrays (TS) — no forced inheritance, no vendor lock-in. |
-| **Conformance-driven** | Every versioned Protocol ships with a public test suite. Backends prove compliance by passing the same tests as the reference implementation. |
-| **Fail-fast validation** | Invalid data is rejected at construction time, not discovered downstream. |
-| **Composable** | Each library answers one question. Stack them for full governance or use any one standalone. |
-| **Offline-first** | Every operation works without network access. Federation is additive, not required. |
+|---|---|
+| **Zero dependencies** (Python tier) | Core libraries use only the standard library; crypto and database backends are optional extras |
+| **Substrate-neutral** (TS tier) | The renderer accepts events as a prop — it never opens connections, polls endpoints, or makes network calls |
+| **Protocol-based** | Extension points use `@runtime_checkable` protocols (Python) or typed event arrays (TS) — no forced inheritance, no lock-in |
+| **Conformance-driven** | Every versioned Protocol ships a public test suite; backends prove compliance by passing the same tests as the reference implementation |
+| **Fail-fast validation** | Invalid data is rejected at construction time, not discovered downstream |
+| **Composable** | Each library answers one question; stack them for full governance or use any one standalone |
+| **Offline-first** | Every operation works without network access; federation is additive, not required |
 
----
-
-## Quick Start
+<details>
+<summary><b>Quick start</b> — five tiers in ~25 lines</summary>
 
 ```python
 # Identity
@@ -230,9 +141,7 @@ output = coord.complete_training("my-model", "sha256:abc", {"loss": 0.28})
 approval = coord.submit_for_governance(output, approved_by="governance-lead")
 
 # Regulatory compliance — produces AAEs
-from sm_locp import (
-    RegulatoryTheoryBuilder, Literal, VCGenerator, ComplianceCredentialSubject,
-)
+from sm_locp import RegulatoryTheoryBuilder, Literal
 theory = (
     RegulatoryTheoryBuilder("WAREHOUSE")
     .defeasible("D1", ["operator_certified"], "permitted", priority=5)
@@ -246,14 +155,14 @@ from sm_bridge import SmBridge, SimpleAgent
 bridge = SmBridge(registry_id="my-registry", provider_name="My Org", provider_url="https://example.com")
 bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="An AI assistant"))
 ```
-
+</details>
 
 ---
 
-## Test Coverage
+## Test coverage
 
 | Package | Version | Tests | Dependencies |
-|---------|:-------:|:-----:|:------------:|
+|---|:-:|:-:|:-:|
 | [sm-bridge](https://github.com/Sharathvc23/sm-bridge) | 0.3.1 | 40 | FastAPI, Pydantic |
 | [sm-model-provenance](https://github.com/Sharathvc23/sm-model-provenance) | 0.2.0 | 43 | None |
 | [sm-model-card](https://github.com/Sharathvc23/sm-model-card) | 0.2.0 | 43 | None |
@@ -262,12 +171,15 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 | [sm-locp](https://github.com/Sharathvc23/sm-locp) | 0.2.0 | 102 | cryptography |
 | [sm-enclave](https://github.com/Sharathvc23/sm-enclave) | 0.2.0 | 86 | None |
 | [sm-airlock](https://github.com/Sharathvc23/sm-airlock) | 0.2.0 | 78 | None |
-| [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.2.3 | 69 | React 19, Radix UI, lucide-react |
-| [sm-decision-inspector](https://github.com/Sharathvc23/sm-decision-inspector) | 0.1.1 | 45 | React 19, Radix UI, lucide-react |
-| [sm-attest-auditor](https://github.com/Sharathvc23/sm-attest-auditor) | 0.1.1 | 35 | React 19, Radix UI, lucide-react |
-| [sm-conformance](https://github.com/Sharathvc23/sm-conformance) | 0.1.0 | 62 | cryptography, base58 |
-| **Total** | | **853** | |
-
+| [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.2.3 | 69 | React 19, Radix UI |
+| [sm-decision-inspector](https://github.com/Sharathvc23/sm-decision-inspector) | 0.1.1 | 45 | React 19, Radix UI |
+| [sm-attest-auditor](https://github.com/Sharathvc23/sm-attest-auditor) | 0.1.1 | 35 | React 19, Radix UI |
+| [sm-arp](https://github.com/Sharathvc23/sm-arp) | 0.2.1 | 89 | cryptography, base58, jcs |
+| [sm-org-server](https://github.com/Sharathvc23/sm-org-server) | 0.1.0 | 75 | FastAPI, sm-arp |
+| [sm-org-agent](https://github.com/Sharathvc23/sm-org-agent) | 0.1.0 | 34 | cryptography, sm-arp |
+| [sm-federation](https://github.com/Sharathvc23/sm-federation) | 0.1.0 | 28 | None |
+| [sm-conformance](https://github.com/Sharathvc23/sm-conformance) | 0.3.1 | 96 | cryptography, base58 |
+| **Total** | | **1,113** | |
 
 ---
 
