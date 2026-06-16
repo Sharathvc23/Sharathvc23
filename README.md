@@ -22,7 +22,7 @@ anyone holding the runtime's `did:key` — no service on the path, no vendor loc
 
 ---
 
-## The map
+## Stellar Minds map
 
 ```
   +-----------------------------------------------------------+
