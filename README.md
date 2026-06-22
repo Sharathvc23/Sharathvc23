@@ -78,7 +78,7 @@ anyone holding the runtime's `did:key` — no service on the path, no vendor loc
 </details>
 
 <details>
-<summary><b>🌐 Federation &amp; NANDA Chapter Protocol</b> — how agents find, join, and trust each other (5)</summary>
+<summary><b>🌐 Federation &amp; NANDA Protocol</b> — how agents find, join, and trust each other (5)</summary>
 
 | Library | What it does | Install |
 |---|---|---|
