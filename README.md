@@ -11,8 +11,9 @@ The industry is scaling the Internet of Agents. But the mainstream narrative ass
 cloud connectivity, abundant compute, and low-stakes consumer tasks. The autonomous economy at
 the extreme edge — aerospace, defense, maritime, physical infrastructure — needs more:
 **cryptographic model governance**, **offline-capable identity**, **structural compliance**,
-**verifiable capability restriction**, and **operator surfaces** that turn signed evidence into
-something a human can triage in real time. These libraries are the building blocks.
+**verifiable capability restriction**, **signed agency receipts under bounded delegated authority**,
+and **operator surfaces** that turn signed evidence into something a human can triage in real time.
+These libraries are the building blocks.
 
 Each ships a **small, versioned Protocol surface** and a **public conformance suite**. Any backend
 — including proprietary ones — plugs in behind the same Protocol and proves compliance against the
@@ -29,14 +30,18 @@ anyone holding the runtime's `did:key` — no service on the path, no vendor loc
   |          OPERATOR SURFACES   (TS / React)                 |
   |   attest-viewer · decision-inspector · attest-auditor     |
   +--------------------------- ↑ -----------------------------+
-                               |  W3C VC streams (AAE envelope)
+                               |  signed evidence (receipts / AAE envelopes)
+  +-----------------------------------------------------------+
+  |   AGENCY & ACCOUNTABILITY    arp · dat · parc             |
+  |   did it happen? · was it allowed? · is it trusted?       |
   +-----------------------------------------------------------+
   |          BEHAVIORAL TRUST   locp → airlock → enclave      |
   +-----------------------------------------------------------+
   |          MODEL TRUST   provenance · card · integrity · gov|
   +-----------------------------------------------------------+
-  |          FEDERATION   sm-bridge · NANDA Chapter Protocol  |
+  |   FEDERATION   bridge · org-server · org-agent · federation|
   +-----------------------------------------------------------+
+     conformance binds every tier — signed, offline-checkable badges
 ```
 
 *Substrate tiers are Python-first (they run where agents run); Operator Surfaces are TS / React
@@ -45,6 +50,20 @@ anyone holding the runtime's `did:key` — no service on the path, no vendor loc
 ---
 
 ## The libraries
+
+<details open>
+<summary><b>🧾 Agency &amp; Accountability</b> — what an agent owes the human it represents · receipts · authority · reputation (3)</summary>
+
+The layer above MCP (tool integration) and A2A (transport) that those standards deliberately leave
+open: *what does an agent owe the human it acts for?* Three primitives, one signing path (Ed25519
+over JCS), each answering one half of a trust question — and composable end-to-end.
+
+| Library | What it does | Install |
+|---|---|---|
+| [`sm-arp`](https://github.com/Sharathvc23/sm-arp) | **Agency Receipt Protocol** — per-action, Ed25519-signed, JCS-canonical, hash-chained receipts. *Did it happen?* | `pip install sm-arp` |
+| [`sm-dat`](https://github.com/Sharathvc23/sm-dat) | **Delegated Authority Token** — the principal-signed grant bounding what an agent may do, for how long, under what limits; three-valued, recomputable verdicts. *Was it authorized?* | `pip install git+https://github.com/Sharathvc23/sm-dat.git` |
+| [`sm-parc`](https://github.com/Sharathvc23/sm-parc) | **Portable Agent Reputation Credential** — a recomputable reputation VC consumed at chapter admission; reputation that travels, collusion that can't. *Is it trusted?* | `pip install sm-parc` |
+</details>
 
 <details>
 <summary><b>🧠 Model Trust</b> — what is this model? · identity · cards · integrity · governance (4)</summary>
@@ -78,12 +97,11 @@ anyone holding the runtime's `did:key` — no service on the path, no vendor loc
 </details>
 
 <details>
-<summary><b>🌐 Federation &amp; NANDA Protocol</b> — how agents find, join, and trust each other (5)</summary>
+<summary><b>🌐 Federation &amp; NANDA Protocol</b> — how agents find, join, and trust each other (4)</summary>
 
 | Library | What it does | Install |
 |---|---|---|
 | [`sm-bridge`](https://github.com/Sharathvc23/sm-bridge) | NANDA-compatible registry endpoints + Quilt delta sync; drop-in FastAPI router | `pip install git+https://github.com/Sharathvc23/sm-bridge.git` |
-| [`sm-arp`](https://github.com/Sharathvc23/sm-arp) | Agency Receipt Protocol — per-action, Ed25519-signed, JCS-canonical, hash-chained receipts | `pip install sm-arp` |
 | [`sm-org-server`](https://github.com/Sharathvc23/sm-org-server) | Minimal, backend-agnostic **server** implementing the Chapter Protocol wire (~550 lines) | `pip install sm-org-server` |
 | [`sm-org-agent`](https://github.com/Sharathvc23/sm-org-agent) | The **agent** client signing surface — did:key identity, canonical strings, Ed25519 headers | `pip install sm-org-agent` |
 | [`sm-federation`](https://github.com/Sharathvc23/sm-federation) | Cross-server federation descriptor + envelope spec | `pip install git+https://github.com/Sharathvc23/sm-federation.git` |
@@ -174,12 +192,14 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 | [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.2.3 | 69 | React 19, Radix UI |
 | [sm-decision-inspector](https://github.com/Sharathvc23/sm-decision-inspector) | 0.1.1 | 45 | React 19, Radix UI |
 | [sm-attest-auditor](https://github.com/Sharathvc23/sm-attest-auditor) | 0.1.1 | 35 | React 19, Radix UI |
-| [sm-arp](https://github.com/Sharathvc23/sm-arp) | 0.2.1 | 89 | cryptography, base58, jcs |
+| [sm-arp](https://github.com/Sharathvc23/sm-arp) | 0.3.0 | 170 | cryptography, base58, jcs |
+| [sm-dat](https://github.com/Sharathvc23/sm-dat) | 0.1.0 | 42 | sm-arp, cryptography, jcs |
+| [sm-parc](https://github.com/Sharathvc23/sm-parc) | 0.2.1 | 56 | cryptography, base58, jcs |
 | [sm-org-server](https://github.com/Sharathvc23/sm-org-server) | 0.1.0 | 75 | FastAPI, sm-arp |
 | [sm-org-agent](https://github.com/Sharathvc23/sm-org-agent) | 0.1.0 | 34 | cryptography, sm-arp |
 | [sm-federation](https://github.com/Sharathvc23/sm-federation) | 0.1.0 | 28 | None |
-| [sm-conformance](https://github.com/Sharathvc23/sm-conformance) | 0.3.1 | 96 | cryptography, base58 |
-| **Total** | | **1,113** | |
+| [sm-conformance](https://github.com/Sharathvc23/sm-conformance) | 0.3.2 | 96 | cryptography, base58 |
+| **Total** | | **1,292** | |
 
 ---
 
