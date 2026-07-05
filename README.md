@@ -32,12 +32,15 @@ anyone holding the runtime's `did:key` — no service on the path, no vendor loc
   +--------------------------- ↑ -----------------------------+
                                |  signed evidence (receipts / AAE envelopes)
   +-----------------------------------------------------------+
-  |   AGENCY & ACCOUNTABILITY    arp · dat · parc             |
+  |   AGENCY & ACCOUNTABILITY    arp · aae · dat · parc       |
   |   did it happen? · was it allowed? · is it trusted?       |
   +-----------------------------------------------------------+
   |          BEHAVIORAL TRUST   locp → airlock → enclave      |
   +-----------------------------------------------------------+
   |          MODEL TRUST   provenance · card · integrity · gov|
+  +-----------------------------------------------------------+
+  |   ACCOUNTABLE DISCOVERY   resolver → divergence           |
+  |   is the registry itself telling the truth?               |
   +-----------------------------------------------------------+
   |   FEDERATION   bridge · org-server · org-agent · federation|
   +-----------------------------------------------------------+
@@ -52,15 +55,16 @@ anyone holding the runtime's `did:key` — no service on the path, no vendor loc
 ## The libraries
 
 <details open>
-<summary><b>🧾 Agency &amp; Accountability</b> — what an agent owes the human it represents · receipts · authority · reputation (3)</summary>
+<summary><b>🧾 Agency &amp; Accountability</b> — what an agent owes the human it represents · receipts · verdicts · authority · reputation (4)</summary>
 
 The layer above MCP (tool integration) and A2A (transport) that those standards deliberately leave
-open: *what does an agent owe the human it acts for?* Three primitives, one signing path (Ed25519
-over JCS), each answering one half of a trust question — and composable end-to-end.
+open: *what does an agent owe the human it acts for?* Four primitives, one signing path (Ed25519
+over JCS), each answering one part of a trust question — and composable end-to-end.
 
 | Library | What it does | Install |
 |---|---|---|
 | [`sm-arp`](https://github.com/Sharathvc23/sm-arp) | **Agency Receipt Protocol** — per-action, Ed25519-signed, JCS-canonical, hash-chained receipts. *Did it happen?* | `pip install sm-arp` |
+| [`sm-aae`](https://github.com/Sharathvc23/sm-aae) | **Attested Action Envelope** — a signed, hash-chained record of a *pre-action* authorization verdict (`authorized` / `denied` / `conditional`); refusals are first-class, provable later. *What was permitted, and what was refused?* | `pip install sm-aae` |
 | [`sm-dat`](https://github.com/Sharathvc23/sm-dat) | **Delegated Authority Token** — the principal-signed grant bounding what an agent may do, for how long, under what limits; three-valued, recomputable verdicts. *Was it authorized?* | `pip install git+https://github.com/Sharathvc23/sm-dat.git` |
 | [`sm-parc`](https://github.com/Sharathvc23/sm-parc) | **Portable Agent Reputation Credential** — a recomputable reputation VC consumed at chapter admission; reputation that travels, collusion that can't. *Is it trusted?* | `pip install sm-parc` |
 </details>
@@ -108,9 +112,25 @@ over JCS), each answering one half of a trust question — and composable end-to
 </details>
 
 <details>
+<summary><b>🔎 Accountable Discovery</b> — is the registry itself telling the truth? · corroboration · divergence (2)</summary>
+
+Discovery is only as honest as the registry answering. A registry can lie by omission (hide an
+agent), tampering (a false endpoint), or equivocation (different answers to different clients) — and
+no signature on a single record proves what a registry chose *not* to serve. The defense is
+corroboration: ask several sources the same question and make any disagreement loud. Together these
+two are the **reference implementation of the IETF Internet-Draft** *Multi-Source Corroboration for
+AI Agent Discovery* (`draft-chandra-agent-registry-corroboration`).
+
+| Library | What it does | Install |
+|---|---|---|
+| [`sm-resolver`](https://github.com/Sharathvc23/sm-resolver) | **The corroboration kernel** — `Resolver[T]`, the View contract, a vantage-aware diff, the Corroborator. Zero runtime dependencies. *What did each source claim?* | `pip install sm-resolver` |
+| [`sm-divergence`](https://github.com/Sharathvc23/sm-divergence) | **Cheating-registry detection** — omission / endpoint / DID divergence across registries + a signed Corroboration Record. *Do they agree?* | `pip install sm-divergence` |
+</details>
+
+<details>
 <summary><b>✅ Conformance</b> — the shared substrate that makes "compliant" checkable</summary>
 
-[`sm-conformance`](https://github.com/Sharathvc23/sm-conformance) is orthogonal to the four tiers —
+[`sm-conformance`](https://github.com/Sharathvc23/sm-conformance) is orthogonal to the trust tiers —
 not one of them, but the substrate that lets any of them prove it is honestly implemented. A runtime
 runs a tier's vectors-driven suite, then ships a small JSON **badge** signed by its own Ed25519 key,
 recording which suite it passed (pinned by a `suite_digest` over the vector corpus) and the pass/fail
@@ -193,13 +213,16 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 | [sm-decision-inspector](https://github.com/Sharathvc23/sm-decision-inspector) | 0.1.1 | 45 | React 19, Radix UI |
 | [sm-attest-auditor](https://github.com/Sharathvc23/sm-attest-auditor) | 0.1.1 | 35 | React 19, Radix UI |
 | [sm-arp](https://github.com/Sharathvc23/sm-arp) | 0.3.0 | 170 | cryptography, base58, jcs |
+| [sm-aae](https://github.com/Sharathvc23/sm-aae) | 0.1.0 | 35 | cryptography |
 | [sm-dat](https://github.com/Sharathvc23/sm-dat) | 0.1.0 | 42 | sm-arp, cryptography, jcs |
 | [sm-parc](https://github.com/Sharathvc23/sm-parc) | 0.2.1 | 56 | cryptography, base58, jcs |
 | [sm-org-server](https://github.com/Sharathvc23/sm-org-server) | 0.1.0 | 75 | FastAPI, sm-arp |
 | [sm-org-agent](https://github.com/Sharathvc23/sm-org-agent) | 0.1.0 | 34 | cryptography, sm-arp |
 | [sm-federation](https://github.com/Sharathvc23/sm-federation) | 0.1.0 | 28 | None |
+| [sm-resolver](https://github.com/Sharathvc23/sm-resolver) | 0.2.0 | 31 | None |
+| [sm-divergence](https://github.com/Sharathvc23/sm-divergence) | 0.8.0 | 114 | httpx (+ Ed25519 extra) |
 | [sm-conformance](https://github.com/Sharathvc23/sm-conformance) | 0.3.2 | 96 | cryptography, base58 |
-| **Total** | | **1,292** | |
+| **Total** | | **1,472** | |
 
 ---
 
