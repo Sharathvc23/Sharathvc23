@@ -1,4 +1,4 @@
-# The Enterprise Internet of AI Agents
+# The Internet of AI Agents
 
 **Open-source primitives for decentralized, cryptographically governed AI agent networks.**
 **Aligned with [Project NANDA](https://projectnanda.org) standards.**
