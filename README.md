@@ -1,7 +1,7 @@
 # The Internet of AI Agents
 
 **Open-source primitives for decentralized, cryptographically governed AI agent networks.**
-**Aligned with [Project NANDA](https://projectnanda.org) standards.**
+**Personal Contribution to  [Project NANDA](https://projectnanda.org) .**
 
 ---
 
