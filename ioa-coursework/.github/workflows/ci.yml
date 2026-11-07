@@ -1,0 +1,37 @@
+name: Coursework CI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ioa-coursework/modules/**'
+      - 'ioa-coursework/shared/**'
+      - 'ioa-coursework/scripts/**'
+      - 'ioa-coursework/journal/**'
+  pull_request:
+    paths:
+      - 'ioa-coursework/modules/**'
+      - 'ioa-coursework/shared/**'
+      - 'ioa-coursework/scripts/**'
+      - 'ioa-coursework/journal/**'
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check internal links
+        run: python ioa-coursework/scripts/check_links.py
+
+  run-examples:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Run module examples
+        run: bash ioa-coursework/scripts/run_examples.sh
