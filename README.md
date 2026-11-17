@@ -199,30 +199,32 @@ bridge.register_agent(SimpleAgent(id="my-agent", name="My Agent", description="A
 
 ## Test coverage
 
+Versions and test counts as declared and collected on each repository's default branch (2026-11-17).
+
 | Package | Version | Tests | Dependencies |
 |---|:-:|:-:|:-:|
-| [sm-bridge](https://github.com/Sharathvc23/sm-bridge) | 0.3.1 | 40 | FastAPI, Pydantic |
+| [sm-bridge](https://github.com/Sharathvc23/sm-bridge) | 0.11.0 | 412 | FastAPI, Pydantic |
 | [sm-model-provenance](https://github.com/Sharathvc23/sm-model-provenance) | 0.2.0 | 43 | None |
 | [sm-model-card](https://github.com/Sharathvc23/sm-model-card) | 0.2.0 | 43 | None |
 | [sm-model-integrity-layer](https://github.com/Sharathvc23/sm-model-integrity-layer) | 0.2.0 | 153 | None |
 | [sm-model-governance](https://github.com/Sharathvc23/sm-model-governance) | 0.2.0 | 97 | None |
-| [sm-locp](https://github.com/Sharathvc23/sm-locp) | 0.2.0 | 102 | cryptography |
-| [sm-enclave](https://github.com/Sharathvc23/sm-enclave) | 0.2.0 | 86 | None |
+| [sm-locp](https://github.com/Sharathvc23/sm-locp) | 0.2.1 | 106 | cryptography |
+| [sm-enclave](https://github.com/Sharathvc23/sm-enclave) | 0.3.0 | 110 | None |
 | [sm-airlock](https://github.com/Sharathvc23/sm-airlock) | 0.2.0 | 78 | None |
 | [sm-attest-viewer](https://github.com/Sharathvc23/sm-attest-viewer) | 0.2.3 | 69 | React 19, Radix UI |
 | [sm-decision-inspector](https://github.com/Sharathvc23/sm-decision-inspector) | 0.1.1 | 45 | React 19, Radix UI |
 | [sm-attest-auditor](https://github.com/Sharathvc23/sm-attest-auditor) | 0.1.1 | 35 | React 19, Radix UI |
-| [sm-arp](https://github.com/Sharathvc23/sm-arp) | 0.3.0 | 170 | cryptography, base58, jcs |
-| [sm-aae](https://github.com/Sharathvc23/sm-aae) | 0.1.0 | 35 | cryptography |
-| [sm-dat](https://github.com/Sharathvc23/sm-dat) | 0.1.0 | 42 | sm-arp, cryptography, jcs |
-| [sm-parc](https://github.com/Sharathvc23/sm-parc) | 0.2.1 | 56 | cryptography, base58, jcs |
-| [sm-org-server](https://github.com/Sharathvc23/sm-org-server) | 0.1.0 | 75 | FastAPI, sm-arp |
-| [sm-org-agent](https://github.com/Sharathvc23/sm-org-agent) | 0.1.0 | 34 | cryptography, sm-arp |
-| [sm-federation](https://github.com/Sharathvc23/sm-federation) | 0.1.0 | 28 | None |
-| [sm-resolver](https://github.com/Sharathvc23/sm-resolver) | 0.2.0 | 31 | None |
-| [sm-divergence](https://github.com/Sharathvc23/sm-divergence) | 0.8.0 | 114 | httpx (+ Ed25519 extra) |
-| [sm-conformance](https://github.com/Sharathvc23/sm-conformance) | 0.3.2 | 96 | cryptography, base58 |
-| **Total** | | **1,472** | |
+| [sm-arp](https://github.com/Sharathvc23/sm-arp) | 0.4.0 | 246 | cryptography, base58, jcs |
+| [sm-aae](https://github.com/Sharathvc23/sm-aae) | 0.1.0 | 39 | cryptography |
+| [sm-dat](https://github.com/Sharathvc23/sm-dat) | 0.3.0 | 198 | sm-arp, cryptography, jcs |
+| [sm-parc](https://github.com/Sharathvc23/sm-parc) | 0.3.0 | 105 | cryptography, base58, jcs |
+| [sm-org-server](https://github.com/Sharathvc23/sm-org-server) | 0.2.0 | 148 | FastAPI, sm-arp |
+| [sm-org-agent](https://github.com/Sharathvc23/sm-org-agent) | 0.2.0 | 64 | cryptography, sm-arp |
+| [sm-federation](https://github.com/Sharathvc23/sm-federation) | 0.7.0 | 171 | None |
+| [sm-resolver](https://github.com/Sharathvc23/sm-resolver) | 0.7.0 | 84 | None |
+| [sm-divergence](https://github.com/Sharathvc23/sm-divergence) | 0.12.0 | 236 | httpx (+ Ed25519 extra) |
+| [sm-conformance](https://github.com/Sharathvc23/sm-conformance) | 0.4.0 | 142 | cryptography, base58 |
+| **Total** | | **2,624** | |
 
 ---
 
